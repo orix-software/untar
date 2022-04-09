@@ -136,6 +136,30 @@
 ;----------------------------------------------------------------------
 ;
 ;----------------------------------------------------------------------
+.proc archive_seek
+;		sty	save_y
+		ldy	#archive_fp
+		jsr	fseek
+;		php
+;		ldy	save_y
+;		plp
+		rts
+.endproc
+
+;----------------------------------------------------------------------
+;
+;----------------------------------------------------------------------
+.proc archive_tell
+;		sty	save_y
+		ldy	#archive_fp
+		jsr	ftell
+;		ldy	save_y
+		rts
+.endproc
+
+;----------------------------------------------------------------------
+;
+;----------------------------------------------------------------------
 .proc archive_skip
 		lda	pfac+1
 		beq	test
@@ -148,37 +172,7 @@
 
 	cont:
 		jsr	archive_read_bloc
-.if 0
-		lda	pfac+1
-		bne	dec_pfac_1
 
-		lda	pfac+2
-		bne	dec_pfac_2
-
-		lda	pfac+3
-		bne	dec_pfac_3
-		beq	end
-
-	dec_pfac_3:
-		dec	pfac+3
-		beq	end
-
-	dec_pfac_2:
-		dec	pfac+2
-		beq	end
-
-	dec_pfac_1:
-		dec	pfac+1
-		bne	loop
-	test:
-		lda	pfac+2
-		bne	loop
-		lda	pfac+3
-		bne	loop
-		clc
-	end:
-		rts
-.else
 		lda	pfac+1
 		bne	dec_pfac_1
 
@@ -211,7 +205,6 @@
 	end:
 		rts
 
-.endif
 .endproc
 
 ;----------------------------------------------------------------------

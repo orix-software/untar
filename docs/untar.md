@@ -13,14 +13,10 @@
 **untar** list and extract files in a TAR archive
 
 ## OPTIONS
-*  -h
-                show this help message and exit
-*  -t
-                list files
-*  -x
-                extract files
-*  -v
-                verbose mode
+*  -h ^Bshow this help message and exit
+*  -t ^Blist files
+*  -x ^Bextract files
+*  -v ^Bverbose mode
 
 ## SOURCE
 https://github.com/orix-software/untar

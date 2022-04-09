@@ -167,14 +167,6 @@
 		rts
 .endproc
 
-.proc file_tell
-;		sty	save_y
-		ldy	#file_fp
-		jsr	ftell
-;		ldy	save_y
-		rts
-.endproc
-
 ;----------------------------------------------------------------------
 ;
 ; Entrée:
@@ -211,37 +203,4 @@
 		rts
 .endproc
 
-.proc file_seek
-;		sty	save_y
-		ldy	#file_fp
-		jsr	fseek
-;		php
-;		ldy	save_y
-;		plp
-		rts
-.endproc
-
-;----------------------------------------------------------------------
-;
-;----------------------------------------------------------------------
-.proc archive_tell
-;		sty	save_y
-		ldy	#archive_fp
-		jsr	ftell
-;		ldy	save_y
-		rts
-.endproc
-
-;----------------------------------------------------------------------
-;
-;----------------------------------------------------------------------
-.proc archive_seek
-;		sty	save_y
-		ldy	#archive_fp
-		jsr	fseek
-;		php
-;		ldy	save_y
-;		plp
-		rts
-.endproc
 

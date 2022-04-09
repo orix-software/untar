@@ -363,27 +363,6 @@
 	cont:
 		jsr	save_bloc
 
-.if 0
-		lda	pfac+1
-		bne	dec_pfac_1
-		lda	pfac+2
-		bne	dec_pfac_2
-		lda	pfac+3
-		beq	end
-		dec	pfac+3
-	dec_pfac_2:
-		dec	pfac+2
-	dec_pfac_1:
-		dec	pfac+1
-		jmp	loop
-	test:
-		ora	pfac+2
-		ora	pfac+3
-		bne	loop
-		clc
-	end:
-		rts
-.else
 		lda	pfac+1
 		bne	dec_pfac_1
 
@@ -415,7 +394,6 @@
 	end:
 		clc
 		rts
-.endif
 .endproc
 
 ;----------------------------------------------------------------------
@@ -501,6 +479,52 @@
 ; Sous-routines:
 ;	-
 ;----------------------------------------------------------------------
+.proc file_tell
+;		sty	save_y
+		ldy	#file_fp
+		jsr	ftell
+;		ldy	save_y
+		rts
+.endproc
+
+;----------------------------------------------------------------------
+;
+; Entrée:
+;
+; Sortie:
+;
+; Variables:
+;	Modifiées:
+;		-
+;	Utilisées:
+;		-
+; Sous-routines:
+;	-
+;----------------------------------------------------------------------
+.proc file_seek
+;		sty	save_y
+		ldy	#file_fp
+		jsr	fseek
+;		php
+;		ldy	save_y
+;		plp
+		rts
+.endproc
+
+;----------------------------------------------------------------------
+;
+; Entrée:
+;
+; Sortie:
+;
+; Variables:
+;	Modifiées:
+;		-
+;	Utilisées:
+;		-
+; Sous-routines:
+;	-
+;----------------------------------------------------------------------
 .proc file_close
 		jsr	file_tell
 		fclose (fp)
@@ -508,69 +532,79 @@
 		rts
 .endproc
 
-.if 0
-	.proc open_file
-			; O_RDWR non supporté actuellement par le kernel
-			; (force CH376_CMD_FILE_CREATE)
-			fopen	path, O_RDWR
-			sta	fp
-			stx	fp+1
-			eor	fp+1
+;----------------------------------------------------------------------
+;
+; Entrée:
+;
+; Sortie:
+;
+; Variables:
+;	Modifiées:
+;		-
+;	Utilisées:
+;		-
+; Sous-routines:
+;	-
+;----------------------------------------------------------------------
+;.proc file_open
+;		; O_RDWR non supporté actuellement par le kernel
+;		; (force CH376_CMD_FILE_CREATE)
+;		fopen	path, O_RDWR
+;		sta	fp
+;		stx	fp+1
+;		eor	fp+1
+;
+;		rts
+;.endproc
 
-			rts
-	.endproc
-.endif
+.proc file_open
+		lda	file_pos
+		ora	file_pos+1
+		ora	file_pos+2
+		ora	file_pos+2
+		bne	reopen
 
-.if 1
-	.proc file_open
-			lda	file_pos
-			ora	file_pos+1
-			ora	file_pos+2
-			ora	file_pos+2
-			bne	reopen
+		; 1ère ouverture du fichier
+		fopen	path, O_RDONLY
+		sta	fp
+		stx	fp+1
+		eor	fp+1
+		beq	create
 
-			; 1ère ouverture du fichier
-			fopen	path, O_RDONLY
-			sta	fp
-			stx	fp+1
-			eor	fp+1
-			beq	create
+		; ici le fichier existe
+		;lda	keep_old_files
+		;bne	error
 
-			; ici le fichier existe
-			;lda	keep_old_files
-			;bne	error
+		; On peut l'écraser
+		unlink	path
 
-			; On peut l'écraser
-			unlink	path
+	create:
+		;fopen	path, O_CREAT | O_WRONLY
+		fopen	path, O_WRONLY
+		sta	fp
+		stx	fp+1
+		eor	fp+1
+		rts
 
-		create:
-			;fopen	path, O_CREAT | O_WRONLY
-			fopen	path, O_WRONLY
-			sta	fp
-			stx	fp+1
-			eor	fp+1
-			rts
+	reopen:
+		; fopen	path, O_RDWR
+		; fopen	path, O_WRONLY
+		fopen	path, O_RDONLY
+		sta	fp
+		stx	fp+1
+		eor	fp+1
+		rts
 
-		reopen:
-			; fopen	path, O_RDWR
-			; fopen	path, O_WRONLY
-			fopen	path, O_RDONLY
-			sta	fp
-			stx	fp+1
-			eor	fp+1
-			rts
-
-;		error:
-;			; e25: <FNAME> delete protected
-;			; e26: <FNAME> write protected
-;			; e28: <FNAME> permission denied
-;			fclose (fp)
-;			print	overwrite_msg, NOSAVE
-;			lda	#e25
-;			sec
-;			rts
-	.endproc
-.endif
+;	error:
+;		; e25: <FNAME> delete protected
+;		; e26: <FNAME> write protected
+;		; e28: <FNAME> permission denied
+;		fclose (fp)
+;		print	overwrite_msg, NOSAVE
+;		lda	#e25
+;		sec
+;		rts
+.endproc
 
 ;----------------------------------------------------------------------
 ;
