@@ -272,7 +272,7 @@
 
 		; rwx
 		pla
-	exec:
+	exec_:
 		lsr
 		bcc	write
 		ldx	#'x'

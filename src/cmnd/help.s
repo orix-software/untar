@@ -13,7 +13,7 @@
 ;	-
 ;----------------------------------------------------------------------
 .proc cmnd_help
-        print helpmsg, NOSAVE
+        print helpmsg
         clc
         rts
 .endproc

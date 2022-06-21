@@ -71,7 +71,7 @@
 		bvc	extract
 
 	verbose:
-		print	BUFFER+st_header::name, NOSAVE
+		print	BUFFER+st_header::name
 .if 0
 		; Verbose pout tar -tvf
 		lda	BUFFER+st_header::type
@@ -112,7 +112,7 @@
 		jsr	bcd2str
 		jsr	display_size
 .endif
-		print	#' ', NOSAVE
+		cputc	' '
 
 	extract:
 		lda	BUFFER+st_header::type
@@ -122,8 +122,8 @@
 		cmp	#'0'
 		beq	extract_file
 
-		print	unsupported_type, NOSAVE
-		print	BUFFER+st_header::name, NOSAVE
+		print	unsupported_type
+		print	BUFFER+st_header::name
 		crlf
 		jsr	archive_calc_blocs
 
@@ -171,7 +171,7 @@
 ;	-
 ;----------------------------------------------------------------------
 .proc mkdir
-		print	mkdir_msg, NOSAVE
+		print	mkdir_msg
 		jsr	mkpath
 		bcs	end
 
@@ -180,7 +180,7 @@
 		tya
 		pha
 
-		print	path, NOSAVE
+		print	path
 		; print	BUFFER+st_header::name, NOSAVE
 		crlf
 
@@ -216,11 +216,11 @@
 ;	-
 ;----------------------------------------------------------------------
 .proc mkfile
-		print	extract_msg,NOSAVE
+		print	extract_msg
 		jsr	mkpath
 		bcs	end
 
-		print	path, NOSAVE
+		print	path
 		; print	BUFFER+st_header::name, NOSAVE
 		crlf
 
@@ -237,7 +237,7 @@
 		; e25: <FNAME> delete protected
 		; e26: <FNAME> write protected
 		; e28: <FNAME> permission denied
-		print	overwrite_msg, NOSAVE
+		print	overwrite_msg
 		jsr	archive_skip
 
 		; Si on veut stopper complètement l'extraction
@@ -414,7 +414,7 @@
 		; -V?
 		bit	opt
 		bvc	save
-		print	save_bloc_msg, NOSAVE
+		print	save_bloc_msg
 
 	save:
 		jsr	archive_read_bloc
@@ -426,6 +426,7 @@
 
 		jsr	archive_reopen
 		rts
+
 .endproc
 
 ;----------------------------------------------------------------------
@@ -580,7 +581,8 @@
 
 	create:
 		;fopen	path, O_CREAT | O_WRONLY
-		fopen	path, O_WRONLY
+		;fopen	path, O_WRONLY
+		fopen	path, O_CREAT | O_WRONLY
 		sta	fp
 		stx	fp+1
 		eor	fp+1
@@ -589,7 +591,8 @@
 	reopen:
 		; fopen	path, O_RDWR
 		; fopen	path, O_WRONLY
-		fopen	path, O_RDONLY
+		;fopen	path, O_RDONLY
+		fopen	path, O_WRONLY
 		sta	fp
 		stx	fp+1
 		eor	fp+1
@@ -700,13 +703,16 @@
 		iny
 		ldx	path,y
 		beq	end
+
 		cpx	#'/'
 		bne	loop
-		tya
+
 		; On ne peut pas utiliser "bne loop" si path[0] =='/'
 		; (chemin absolu)
-		;bne	loop
+		; tya
+		; bne	loop
 		jmp	loop
+
 	end:
 		pha
 		jsr	archive_close

@@ -44,21 +44,22 @@ endif
 #
 
 ifeq ($(DEBUG),yes)
-	ASFLAGS = -t $(TARGET) -I $(BUILD_PATH) -I $(SDK_PATH) -I $(SHELL_PATH) -I $(KERNEL_PATH) -D VERBOSE_LEVEL=$(VERBOSE) --auto-import --list-bytes 0 -l $(OBJ_PATH)/$(PROJECT).lst --debug-info
-	LDFLAGS = -t $(TARGET)  -Ln $(BIN_PATH)/$(PROJECT).ca.sym -m $(BIN_PATH)/$(PROJECT).map --lib-path $(LIB_PATH)
+	ASFLAGS = -t $(TARGET) -I ../ -I $(BUILD_PATH) -I $(SDK_PATH)/macros -I $(SDK_PATH)/include -I $(SHELL_PATH) -I $(KERNEL_PATH) -D VERBOSE_LEVEL=$(VERBOSE) --auto-import --list-bytes 0 -l $(@:.o=.lst) --debug-info
+	LDFLAGS = -t $(TARGET)  -Ln $(@).ca.sym -m $(@).map --lib-path $(LIB_PATH)
 	# LDFLAGS = -C "$(LD65_CFG)"  -Ln $(BUILD_PATH)/$(PROJECT).ca.sym -m $(BUILD_PATH)/$(PROJECT).map --lib-path $(LIB_PATH)
 else
-	ASFLAGS = -t $(TARGET) -I $(BUILD_PATH) -I $(SDK_PATH) -I $(SHELL_PATH) -I $(KERNEL_PATH) -D VERBOSE_LEVEL=$(VERBOSE) --auto-import
+	ASFLAGS = -t $(TARGET) -I ../ -I $(BUILD_PATH) -I $(SDK_PATH)/macros -I $(SDK_PATH)/include -I $(SHELL_PATH) -I $(KERNEL_PATH) -D VERBOSE_LEVEL=$(VERBOSE) --auto-import
 	LDFLAGS = -t $(TARGET)  --lib-path $(LIB_PATH)
 	# LDFLAGS = -C "$(LD65_CFG)"  --lib-path $(LIB_PATH)
 endif
 
+CREATE_DEP = --create-dep $(@:.o=.d)
 
 #
 # Cibles make
 #
 
-.PHONY: clean mrproper deps
+.PHONY: clean mrproper
 
 
 all: $(BUILD_PATH) $(OBJ_PATH) $(BIN_PATH) $(BIN_PATH)/$(PROJECT)
@@ -68,13 +69,13 @@ configure: $(OBJ_PATH) $(BIN_PATH)
 
 
 clean:
-	cd $(OBJ_PATH) && rm -f *.o *.lst
+	@cd $(OBJ_PATH) && rm -f *.o *.lst *.d
+	@cd $(BIN_PATH) && rm -f *.sym *.map
 
 
 mrproper: clean
-	@#cd $(BIN_PATH) && rm -f $(PROJECT) *.sym *.map
-	rm -rf $(BIN_PATH)
-	rm -rf $(OBJ_PATH)
+	@rm -rf $(BIN_PATH)
+	@rm -rf $(OBJ_PATH)
 
 
 #
@@ -84,21 +85,12 @@ mrproper: clean
 
 SRC = $(wildcard *.s)
 OBJS= $(addprefix $(OBJ_PATH)/, $(patsubst %.s,%.o, $(SRC)))
-
--include $(BUILD_PATH)/.depend
-
-
-deps: $(BUILD_PATH)/.depend
-
-
-$(BUILD_PATH)/.depend: $(SRC)
-	$(AS) $(ASFLAGS) --create-dep $(BUILD_PATH)/.depend -o $(OBJS) $<
-
+DEPS := $(OBJS:.o=.d)
 
 #%.o: %.s
 $(OBJ_PATH)/%.o: %.s
 	@echo "Assemble $<"
-	@$(AS) $(ASFLAGS) -o $@ $<
+	@$(AS) $(ASFLAGS) $(CREATE_DEP) -o $@ $<
 
 
 $(BIN_PATH)/$(PROJECT): $(OBJS) $(LIB_PATH)/$(LIBS)
@@ -121,3 +113,4 @@ $(BUILD_PATH):
 	@echo "Create $(BUILD_PATH) directory"
 	@mkdir -p $(BUILD_PATH)
 
+-include $(DEPS)

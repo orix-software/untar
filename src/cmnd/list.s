@@ -37,29 +37,29 @@
 	verbose:
 		;lda	BUFFER+st_header::type
 		jsr	type2str
-		.byte	$00, XWR0
+		cputc
 		; print	BUFFER+st_header::type, NOSAVE
 
 		; 0000755
 		lda	BUFFER+st_header::mode+4
 		jsr	mode2str
-		print	modestr, NOSAVE
+		print	modestr
 
 		lda	BUFFER+st_header::mode+5
 		jsr	mode2str
-		print	modestr, NOSAVE
+		print	modestr
 
 		lda	BUFFER+st_header::mode+6
 		jsr	mode2str
-		print	modestr, NOSAVE
+		print	modestr
 
-		print	#' ', NOSAVE
+		cputc	' '
 
 		; On suppose une archive ustar
 		; TODO: faire un test pour le type d'archive
-		print	BUFFER+st_header::uname, NOSAVE
-		print	#'/', NOSAVE
-		print	BUFFER+st_header::gname, NOSAVE
+		print	BUFFER+st_header::uname
+		cputc	'/'
+		print	BUFFER+st_header::gname
 
 ;		print	#' '
 ;		print	#' '
@@ -72,11 +72,11 @@
 		jsr	bcd2str
 		jsr	display_size
 
-		print	#' ', NOSAVE
+		cputc	' '
 
 	display_name:
-		print	BUFFER+st_header::name, NOSAVE
-		.byte $00, XCRLF
+		print	BUFFER+st_header::name
+		crlf
 		jsr	archive_calc_blocs
 
 		jsr	archive_skip

@@ -45,10 +45,10 @@ pfac3		pfac2		pfac1		pfac0
 ;----------------------------------------------------------------------
 ;			Orix SDK includes
 ;----------------------------------------------------------------------
-.include "macros/SDK.mac"
-.include "include/SDK.inc"
-.include "macros/types.mac"
-.include "include/errors.inc"
+.include "SDK.mac"
+.include "SDK.inc"
+.include "types.mac"
+.include "errors.inc"
 
 ;----------------------------------------------------------------------
 ;				Imports
@@ -268,7 +268,11 @@ MODULE , , startup
 
 		cpx	#$00
 		;beq	error
-		beq	end
+		bne	help
+		jsr	cmnd_version
+		prints	"missing arguments"
+		crlf
+		rts
 
 	help:
 		; -H?
@@ -314,9 +318,14 @@ MODULE , , startup
 	error:
 		jsr ermes
 	end:
-		BRK_KERNEL XCRLF
+		crlf
 		rts
 .endproc
+
+;----------------------------------------------------------------------
+;
+;----------------------------------------------------------------------
+.include "cmnd/version.s"
 
 ;----------------------------------------------------------------------
 ;
