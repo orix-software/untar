@@ -32,7 +32,7 @@
 		rts
 
 	loop:
-		crlf
+;		crlf
 
 		jsr	archive_read_bloc
 
@@ -71,6 +71,7 @@
 		bvc	extract
 
 	verbose:
+		crlf
 		print	BUFFER+st_header::name
 .if 0
 		; Verbose pout tar -tvf
@@ -171,7 +172,7 @@
 ;	-
 ;----------------------------------------------------------------------
 .proc mkdir
-		print	mkdir_msg
+;		print	mkdir_msg
 		jsr	mkpath
 		bcs	end
 
@@ -180,9 +181,9 @@
 		tya
 		pha
 
-		print	path
+;		print	path
 		; print	BUFFER+st_header::name, NOSAVE
-		crlf
+;		crlf
 
 		jsr	archive_calc_blocs
 
@@ -216,13 +217,13 @@
 ;	-
 ;----------------------------------------------------------------------
 .proc mkfile
-		print	extract_msg
+;		print	extract_msg
 		jsr	mkpath
 		bcs	end
 
-		print	path
+;		print	path
 		; print	BUFFER+st_header::name, NOSAVE
-		crlf
+;		crlf
 
 		jsr	archive_calc_blocs
 
@@ -237,6 +238,12 @@
 		; e25: <FNAME> delete protected
 		; e26: <FNAME> write protected
 		; e28: <FNAME> permission denied
+		; -V?
+		bit	opt
+		bvs	error2
+		crlf
+		print	BUFFER+st_header::name
+	error2:
 		print	overwrite_msg
 		jsr	archive_skip
 
@@ -752,9 +759,9 @@
 	.segment "RODATA"
 		unsupported: .asciiz "unsupported option\r\n"
 		unsupported_type: .asciiz "?? "
-		mkdir_msg: .asciiz "mkdir "
-		extract_msg: .asciiz "extract "
+;		mkdir_msg: .asciiz "mkdir "
+;		extract_msg: .asciiz "extract "
 		save_bloc_msg: .asciiz "."
-		overwrite_msg: .asciiz " : Cannot open: File exists"
+		overwrite_msg: .asciiz ": File exists"
 .popseg
 
