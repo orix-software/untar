@@ -108,7 +108,9 @@ jobs:
           key: ${{ runner.os }}-orix-sdk_
 
       - name: Prepare environment for project
-        run: mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
+        run: |
+          pip install configparser
+          mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
 
       - name: Compile project
         run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
