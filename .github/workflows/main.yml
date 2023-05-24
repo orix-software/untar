@@ -109,11 +109,12 @@ jobs:
 
       - name: Prepare environment for project
         run: |
-          pip install configparser
           mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
 
       - name: Compile project
-        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
+        run: |
+          pip install configparser
+          CC65_HOME=${GITHUB_WORKSPACE}/../cc65 make
 
       - name: List build directory content
         run: ls -lR build
