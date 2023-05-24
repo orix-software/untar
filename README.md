@@ -1,3 +1,5 @@
+[![build](https://github.com/orix-software/untar/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/orix-software/untar/actions/workflows/main.yml)
+
 # Description
 Untar utility for Orix
 
