@@ -177,12 +177,12 @@ typedef .struct st_header
 	startup:
 		jsr	zerobss
 
- 	; FIXME	initmainargs cbp_bkp, argc, 1
+ 		initmainargs cbp_bkp, argc, 1
 
-		lda	#<BUFEDT
-		ldy	#>BUFEDT
-		sta	cbp
-		sty	cbp+1
+		lda	cbp_bkp
+		sta cbp
+		lda	cbp_bkp+1
+		sta cbp+1
 
 		; Saute le nom de la commande
 		ldy	#$00
@@ -204,7 +204,7 @@ typedef .struct st_header
 		adc	cbp+1
 
 		jsr	_main
-		;FIXME mfree(cbp_bkp)
+		mfree(cbp_bkp)
 		rts
 
 .proc zerobss
