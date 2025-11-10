@@ -56,7 +56,7 @@
 ;	- prints
 ;----------------------------------------------------------------------
 .proc cmnd_version
-        prints  "untar version 1.0 - 2022.2\r\n"
+        prints  "untar version 1.0 - 2025.4\r\n"
         rts
 .endproc
 

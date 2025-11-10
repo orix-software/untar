@@ -130,6 +130,9 @@ typedef .struct st_header
 
 	unsigned char xtrk
 	unsigned char psec
+	; For XMAINARGS
+	unsigned short cbp_bkp
+	unsigned char argc
 
 ;----------------------------------------------------------------------
 ;				Variables
@@ -169,15 +172,12 @@ typedef .struct st_header
 ; contient normalement des données sauvegardées par init qui est dans le segment "ONCE"
 ;	init:
 ;		rts
+
+
 	startup:
 		jsr	zerobss
 
-		; XMAINARGS
-		; .byte $00, $2c
-
-		; sta	argv
-		; sty	argv+1
-		; stx	argc
+ 	; FIXME	initmainargs cbp_bkp, argc, 1
 
 		lda	#<BUFEDT
 		ldy	#>BUFEDT
@@ -204,6 +204,7 @@ typedef .struct st_header
 		adc	cbp+1
 
 		jsr	_main
+		;FIXME mfree(cbp_bkp)
 		rts
 
 .proc zerobss
@@ -241,7 +242,7 @@ typedef .struct st_header
 	L4:
 		rts
 
-		rts
+	;	rts
 .endproc
 
 .segment "ONCE"
@@ -319,6 +320,7 @@ MODULE , , startup
 		jsr ermes
 	end:
 		crlf
+
 		rts
 .endproc
 
