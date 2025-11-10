@@ -23,6 +23,8 @@ VERBOSE ?= 0
 #
 TARGET = telestrat
 
+START_ADDR ?= 0x0900
+
 #
 # Définition des outils
 #
@@ -45,11 +47,11 @@ endif
 
 ifeq ($(DEBUG),yes)
 	ASFLAGS = -t $(TARGET) -I ../ -I $(BUILD_PATH) -I $(SDK_PATH)/macros -I $(SDK_PATH)/include -I $(SHELL_PATH) -I $(KERNEL_PATH) -D VERBOSE_LEVEL=$(VERBOSE) --auto-import --list-bytes 0 -l $(@:.o=.lst) --debug-info
-	LDFLAGS = -t $(TARGET)  -Ln $(@).ca.sym -m $(@).map --lib-path $(LIB_PATH)
+	LDFLAGS = -t $(TARGET)  -Ln $(@).ca.sym -m $(@).map --lib-path $(LIB_PATH) --start-addr $(START_ADDR)
 	# LDFLAGS = -C "$(LD65_CFG)"  -Ln $(BUILD_PATH)/$(PROJECT).ca.sym -m $(BUILD_PATH)/$(PROJECT).map --lib-path $(LIB_PATH)
 else
 	ASFLAGS = -t $(TARGET) -I ../ -I $(BUILD_PATH) -I $(SDK_PATH)/macros -I $(SDK_PATH)/include -I $(SHELL_PATH) -I $(KERNEL_PATH) -D VERBOSE_LEVEL=$(VERBOSE) --auto-import
-	LDFLAGS = -t $(TARGET)  --lib-path $(LIB_PATH)
+	LDFLAGS = -t $(TARGET)  --lib-path $(LIB_PATH) --start-addr $(START_ADDR)
 	# LDFLAGS = -C "$(LD65_CFG)"  --lib-path $(LIB_PATH)
 endif
 
