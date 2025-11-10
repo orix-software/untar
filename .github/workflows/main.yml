@@ -28,7 +28,7 @@ jobs:
              orix-software/**/*
              bpm/**/*
              oricutron/**/*
-          key: ${{ secrets.CACHE_ID }}-orix-sdk
+          key: ${{ runner.os }}-orix-sdk
 
       - name: Checkout cc65
         if: steps.cache-sdk.outputs.cache-hit != 'true'
@@ -107,7 +107,7 @@ jobs:
              orix-sdk/**/*
              md2hlp/**/*
              orix-software/**/*
-          key: ${{ secrets.CACHE_ID }}-orix-sdk
+          key: ${{ runner.os }}-orix-sdk
 
       - name: Prepare environment for project
         run: |
