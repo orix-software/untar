@@ -117,7 +117,8 @@ jobs:
              md2hlp/**/*
              orix-software/**/*
              oricutron/**/*
-          key: ${{ secrets.CACHE_ID }}-orix-sdk
+
+          key: 11112025-orix-sdk
 
       - name: Prepare environment for project
         run: |
@@ -131,7 +132,7 @@ jobs:
         run: ls -lR build
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ${{ steps.job_vars.outputs.REPO_NAME }}
           path: |
