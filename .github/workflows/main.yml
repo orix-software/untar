@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Cache sdk
         id: cache-sdk
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
              cc65/**/*
@@ -109,7 +109,7 @@ jobs:
           echo "::set-output name=REPO_NAME::${GITHUB_REPOSITORY##*/}"
 
       - name: Install sdk
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
              cc65/**/*
@@ -117,7 +117,6 @@ jobs:
              md2hlp/**/*
              orix-software/**/*
              oricutron/**/*
-
           key: 11112025-orix-sdk
 
       - name: Prepare environment for project
