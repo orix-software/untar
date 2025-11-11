@@ -53,7 +53,7 @@ jobs:
           path: md2hlp
 
       - name: Compilation CC65
-        #if: steps.cache-sdk.outputs.cache-hit != 'true'
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
         run: make -C cc65 >/dev/null
 
       - name: Prepare environment for orix-sdk
