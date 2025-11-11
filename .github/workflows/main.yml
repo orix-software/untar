@@ -121,6 +121,7 @@ jobs:
 
       - name: Prepare environment for project
         run: |
+          ls -l
           mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
 
       - name: Compile project
