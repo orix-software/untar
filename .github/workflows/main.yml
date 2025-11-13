@@ -139,6 +139,7 @@ jobs:
           if [ -f "bpm.tml" ]; then
             chmod 755 ../bpm/src/bpm
             bpm --force-update --replace-for-new-project -V
+          fi
           CC65_HOME=${GITHUB_WORKSPACE}/../cc65 ./make.sh
 
       - name: List build directory content
