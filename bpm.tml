@@ -1,0 +1,34 @@
+[package]
+name = "untar"
+version = "2025.4"
+authors = [ "Assinie",]
+license = ""
+edition = "2025"
+cpu = "6502"
+readme = ""
+repository = "https://github.com/orix-software/untar"
+documentation = ""
+description = "Provide untar"
+homepage = ""
+buildfolder = "build"
+packagetype = "tgz"
+codetype = "bin"
+templatecode = ""
+pathsrc = "src"
+oricutron_replace_autoboot_run = "True"
+asm_bin_tpl_version = "2024.4"
+asm_rom_tpl_version = "2024.4"
+orixsdk_version = "2023.3.0"
+default_github_action_version = "2025.2"
+default_generatedoc_version = "2025.4"
+orix_minimal_kernel_version = "2022.3"
+orix_run_pre_script = ""
+md2hlp = "yes"
+enable_build = "False"
+enable_publish = "True"
+
+[dependencies]
+
+[dynamiclibs]
+
+[srcfolders]
