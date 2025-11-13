@@ -38,6 +38,13 @@ jobs:
           repository: cc65/cc65
           path: cc65
 
+      - name: Checkout bpm
+        if: steps.cache-sdk.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: orix-software/bpm
+          path: bpm
+
       - name: Checkout orix-sdk
         if: steps.cache-sdk.outputs.cache-hit != 'true'
         uses: actions/checkout@v3
@@ -98,6 +105,7 @@ jobs:
     outputs:
       version: ${{ steps.job_vars.outputs.VERSION }}
       repo_name: ${{ steps.job_vars.outputs.REPO_NAME }}
+      bpm_found: ${{ steps.bpm_upload.outputs.BPM_FOUND }}
 
     steps:
       - uses: actions/checkout@v3
@@ -122,11 +130,16 @@ jobs:
 
       - name: Prepare environment for project
         run: |
-          ls -l
-          mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../
+          mkdir ~/bin
+          cd bpm && pip install -r requirements.txt && cd ..
+          mv cc65 ../ && mv orix-software ../ && mv orix-sdk ../ && mv md2hlp ../ && mv bpm ../
 
       - name: Compile project
-        run: CC65_HOME=${GITHUB_WORKSPACE}/../cc65 ./make.sh
+        run: |
+          if [ -f "bpm.tml" ]; then
+            chmod 755 ../bpm/src/bpm
+            bpm --force-update --replace-for-new-project -V
+          CC65_HOME=${GITHUB_WORKSPACE}/../cc65 ./make.sh
 
       - name: List build directory content
         run: ls -lR build
