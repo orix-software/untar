@@ -156,39 +156,6 @@ jobs:
       - name: Post compilation
         run: mv ../cc65 . && mv ../orix-software . && mv ../orix-sdk . && mv ../md2hlp .
 
-  upload:
-    needs: build
-    runs-on: ubuntu-24.04
-    defaults:
-      run:
-        shell: bash
-    env:
-      hash: ${{ secrets.HASH }}
-      version: ${{ needs.build.outputs.version }}
-      repo_name: ${{ needs.build.outputs.repo_name }}
-
-    steps:
-      - name: Get branch name
-        if: github.event_name != 'pull_request'
-        run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-       # run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF##*/})"
-
-      - name: Get branch name on pull request
-        if: github.event_name == 'pull_request'
-        run: echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> GITHUB_ENV
-       #run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
-
-      - name: Get archive name
-        run: echo "ARCHIVE_NAME=${repo_name}.tgz" >> $GITHUB_ENV
-
-      # On pourrait faire l'extraction directement à la racine si VERSION est dans l'artifact
-      - name: Download Artifact
-        id: download
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.build.outputs.repo_name }}
-          path: artifact
-
       - name: Upload if bpm
         id: bpm_upload
         run: |
@@ -200,3 +167,4 @@ jobs:
           else
             echo "bpm.tml not found, skipping bpm upload"
           fi
+
