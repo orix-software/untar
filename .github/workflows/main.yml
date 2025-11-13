@@ -159,6 +159,7 @@ jobs:
       - name: Upload if bpm
         id: bpm_upload
         run: |
+          ls -l
           if [ -f "bpm.tml" ]; then
             export BPM_PUBLISH_KEY=$hash
             export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
