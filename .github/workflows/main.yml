@@ -138,6 +138,8 @@ jobs:
         run: |
           if [ -f "bpm.tml" ]; then
             chmod 755 ../bpm/src/bpm
+            echo "../bpm/src/bpm" >> $GITHUB_PATH
+            export PATH=$PATH:../bpm/src/:${GITHUB_WORKSPACE}/../cc65/bin
             bpm --force-update --replace-for-new-project -V
           fi
           CC65_HOME=${GITHUB_WORKSPACE}/../cc65 ./make.sh
